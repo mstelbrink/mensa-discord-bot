@@ -20,16 +20,29 @@ client.once(Events.ClientReady, c => {
                 console.log(networkError.message);
             })
         .then((responseText) => {
+
             const mealMap = new Map();
+            const categoriesMap = new Map();
+            const hasTitleMap = new Map();
 
             for (let i = 0; i < responseText.length; i++) {
-                mealMap.set(responseText[i].name, responseText[i].category)
+                mealMap.set(i, responseText[i].name);
+                categoriesMap.set(responseText[i].name, responseText[i].category);
             }
+
+            categoriesMap.forEach((value, key) => {
+                hasTitleMap.set(value, false);
+            });
 
             let content = '>>> ';
             mealMap.forEach((value, key) => {
-                content += '### ' + value + '\n';
-                content += key + '\n';
+                if (hasTitleMap.get(categoriesMap.get(mealMap.get(key))) === false) {
+                    content += '### ' + categoriesMap.get(mealMap.get(key)) + '\n';
+                    content += value + '\n';
+                    hasTitleMap.set(categoriesMap.get(mealMap.get(key)), true);
+                } else {
+                    content += value + '\n';
+                }
             });
             
             client.channels.fetch(channel_id).then(channel => {
