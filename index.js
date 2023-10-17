@@ -12,7 +12,7 @@ client.once(Events.ClientReady, c => {
     const url = 'https://openmensa.org/api/v2/canteens/' + mensa_id + '/days/' + year + '-' + month + '-' + day + '/meals';
 
     let now = new Date();
-    let millisTill8 = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 11, 24, 0, 0) - now;
+    let millisTill8 = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 8, 0, 0, 0) - now;
     if (millisTill8 < 0) {
         millisTill8 += 86400000;
     }
