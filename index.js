@@ -5,22 +5,14 @@ const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
 client.once(Events.ClientReady, c => {
 
+    const getMeals = () => {
+
     const date = new Date();
     const day = date.getDate();
     const month = date.getMonth() + 1; // +1 is necessary because months start at 0
     const year = date.getFullYear();
     const url = 'https://openmensa.org/api/v2/canteens/' + mensa_id + '/days/' + year + '-' + month + '-' + day + '/meals';
-
-    let now = new Date();
-    let millisTill8 = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 8, 0, 0, 0) - now;
-    if (millisTill8 < 0) {
-        millisTill8 += 86400000;
-    }
-    setTimeout(() => {
-        getMeals();
-    }, millisTill8);
-
-    const getMeals = () => {
+    
         if (!(date.getDay === 0 && date.getDate === 6)) {
             fetch(url)
             .then((response) => {
@@ -61,6 +53,15 @@ client.once(Events.ClientReady, c => {
             });
         }
     }
+
+    let now = new Date();
+    let millisTill8 = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 8, 0, 0, 0) - now;
+    if (millisTill8 < 0) {
+        millisTill8 += 86400000;
+    }
+    setTimeout(() => {
+        getMeals();
+    }, millisTill8);
 
 });
 
