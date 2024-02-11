@@ -1,4 +1,4 @@
-const { Client, Events, GatewayIntentBits, SlashCommandBuilder } = require('discord.js');
+const { Client, Events, GatewayIntentBits } = require('discord.js');
 const { token, mensa_id, channel_id } = require('./config.json');
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
@@ -66,8 +66,8 @@ client.once(Events.ClientReady, c => {
     const month = date.getMonth() + 1;
     const year = date.getFullYear();
     const url = 'https://openmensa.org/api/v2/canteens/' + mensa_id + '/days/' + year + '-' + month + '-' + day + '/meals';
-    
-        if (!(date.getDay === 0 && date.getDate === 6)) {
+        console.log(date.getDay() + " " +  date.getDate())
+        if (!(date.getDay() === 0 || date.getDate() === 6)) {
             fetch(url)
             .then((response) => {
 
