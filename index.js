@@ -62,7 +62,7 @@ client.once(Events.ClientReady, c => {
     const getMeals = () => {
 
         const date = new Date();
-        const day = date.getDate() + 1; // TODO Remove +1
+        const day = date.getDate();
         const month = date.getMonth() + 1;
         const year = date.getFullYear();
         const url = 'https://openmensa.org/api/v2/canteens/' + mensa_id + '/days/' + year + '-' + month + '-' + day + '/meals';
