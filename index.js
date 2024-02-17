@@ -65,7 +65,7 @@ client.once(Events.ClientReady, c => {
         const day = date.getDate();
         const month = date.getMonth() + 1;
         const year = date.getFullYear();
-        const url = 'https://openmensa.org/api/v2/canteens/' + mensa_id + '/days/' + year + '-' + month + '-' + day + '/meals';
+        const url = `https://openmensa.org/api/v2/canteens/${mensa_id}/days/${year}-${month}-${day}/meals`;
 
         if (date.getDay() !== 0 || date.getDate() !== 6) {
             fetch(url)
@@ -130,6 +130,8 @@ client.once(Events.ClientReady, c => {
             getMeals()
         }, 86400000)
     }, millisTill8);
+
+    getMeals();
 
 });
 
