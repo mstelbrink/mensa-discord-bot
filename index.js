@@ -126,12 +126,11 @@ client.once(Events.ClientReady, c => {
     }
 
     setTimeout(() => {
+        getMeals();
         setInterval(() => {
             getMeals()
         }, 86400000)
     }, millisTill8);
-
-    getMeals();
 
 });
 
