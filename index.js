@@ -67,56 +67,59 @@ client.once(Events.ClientReady, c => {
         const year = date.getFullYear();
         const url = `https://openmensa.org/api/v2/canteens/${mensa_id}/days/${year}-${month}-${day}/meals`;
 
-        if (date.getDay() !== 0 || date.getDate() !== 6) {
-            fetch(url)
-            .then((response) => {
-                response.json()
-                    .then((responseText) => {
-
-                        const mealMap = new Map();
-                        const categoriesMap = new Map();
-                        const hasTitleMap = new Map();
-                        const notesMap = new Map();
-                        const priceMap = new Map();
-
-                        for (let i = 0; i < responseText.length; i++) {
-                            mealMap.set(i, responseText[i].name);
-                            categoriesMap.set(responseText[i].name, responseText[i].category);
-                            notesMap.set(responseText[i].name, responseText[i].notes);
-                            priceMap.set(responseText[i].name, responseText[i].prices);
-                        }
-                        categoriesMap.forEach((value) => {
-                            hasTitleMap.set(value, false);
-
-                        });
-
-                        let content = '>>> ';
-                        mealMap.forEach((value, key) => {
-                            if (hasTitleMap.get(categoriesMap.get(mealMap.get(key))) === false) {
-                                content += '### ' + categoriesMap.get(mealMap.get(key)) + '\n';
-                                content += key + 1 + '. ' + value + ' (' + priceMap.get(mealMap.get(key)).students + ' €)\n'; // TODO dry code
-                                for (let i = 0; i < notesMap.get(mealMap.get(key)).length; i++) {
-                                    if (!(additives.includes(notesMap.get(mealMap.get(key))[i]))) {
-                                        content += ' - ' + notesMap.get(mealMap.get(key))[i] + '\n';
-                                    }
-                                }
-                                hasTitleMap.set(categoriesMap.get(mealMap.get(key)), true);
-                            } else {
-                                content += key + 1 + '. ' + value + ' (' + priceMap.get(mealMap.get(key)).students + ' €)\n'; // TODO dry code
-                                for (let i = 0; i < notesMap.get(mealMap.get(key)).length; i++) {
-                                    if (!(additives.includes(notesMap.get(mealMap.get(key))[i]))) {
-                                        content += ' - ' + notesMap.get(mealMap.get(key))[i] + '\n';
-                                    }
-                                }
-                            }
-                        });
-
-                        client.channels.fetch(channel_id).then(channel => {
-                            channel.send(content);
-                        });
-                    });
+        fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network error');
+                }
+                return response.json();
             })
-        }
+            .then(responseText => {
+                const mealMap = new Map();
+                const categoriesMap = new Map();
+                const hasTitleMap = new Map();
+                const notesMap = new Map();
+                const priceMap = new Map();
+
+                for (let i = 0; i < responseText.length; i++) {
+                    mealMap.set(i, responseText[i].name);
+                    categoriesMap.set(responseText[i].name, responseText[i].category);
+                    notesMap.set(responseText[i].name, responseText[i].notes);
+                    priceMap.set(responseText[i].name, responseText[i].prices);
+                }
+                categoriesMap.forEach((value) => {
+                    hasTitleMap.set(value, false);
+
+                });
+
+                let content = '>>> ';
+                mealMap.forEach((value, key) => {
+                    if (hasTitleMap.get(categoriesMap.get(mealMap.get(key))) === false) {
+                        content += '### ' + categoriesMap.get(mealMap.get(key)) + '\n';
+                        content += key + 1 + '. ' + value + ' (' + priceMap.get(mealMap.get(key)).students + ' €)\n'; // TODO dry code
+                        for (let i = 0; i < notesMap.get(mealMap.get(key)).length; i++) {
+                            if (!(additives.includes(notesMap.get(mealMap.get(key))[i]))) {
+                                content += ' - ' + notesMap.get(mealMap.get(key))[i] + '\n';
+                            }
+                        }
+                        hasTitleMap.set(categoriesMap.get(mealMap.get(key)), true);
+                    } else {
+                        content += key + 1 + '. ' + value + ' (' + priceMap.get(mealMap.get(key)).students + ' €)\n'; // TODO dry code
+                        for (let i = 0; i < notesMap.get(mealMap.get(key)).length; i++) {
+                            if (!(additives.includes(notesMap.get(mealMap.get(key))[i]))) {
+                                content += ' - ' + notesMap.get(mealMap.get(key))[i] + '\n';
+                            }
+                        }
+                    }
+                });
+
+                client.channels.fetch(channel_id).then(channel => {
+                    channel.send(content);
+                });
+            })
+            .catch(error => {
+                console.error('There was a problem with the Fetch operation:', error);
+            });
     }
 
     const now = new Date();
@@ -132,6 +135,7 @@ client.once(Events.ClientReady, c => {
         }, 86400000)
     }, millisTill8);
 
+    getMeals()
 });
 
 client.login(token);
