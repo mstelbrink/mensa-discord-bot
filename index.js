@@ -1,63 +1,10 @@
 const { Client, Events, GatewayIntentBits } = require('discord.js');
 const { token, mensa_id, channel_id } = require('./config.json');
+const additives = require('./additives.json');
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
 client.once(Events.ClientReady, c => {
-
-    const additives = [
-        'Vegetarisches Gericht',
-        'Veganes Gericht',
-        'Schwein',
-        'Rind',
-        'Wild',
-        'Lamm',
-        'Geflügel',
-        'Fisch/Meeresfrüchte',
-        'Insekten',
-        'enthält Alkohol',
-        'Klimateller',
-        'Farbstoff',
-        'Konservierungsstoff',
-        'Antioxidationsmittel',
-        'Geschmacksverstärker',
-        'geschwefelt',
-        'geschwärzt',
-        'gewachst',
-        'Phosphat',
-        'Süßungsmitteln',
-        'phenylalaninhaltig',
-        'koffeinhaltig',
-        'chininhaltig',
-        'glutenhaltiges Getreide',
-        'Weizen',
-        'Roggen',
-        'Gerste',
-        'Hafer',
-        'Dinkel',
-        'Kamut',
-        'Krebstiere',
-        'Eier',
-        'Fisch',
-        'Erdnüsse',
-        'Soja',
-        'Milch/ Milchzucker',
-        'Schalenfrüchte/ Nüsse',
-        'Mandeln',
-        'Haselnüsse',
-        'Walnüsse',
-        'Cashewnüsse',
-        'Pekannüsse',
-        'Paranüsse',
-        'Macadamianüsse',
-        'Sellerie',
-        'Senf',
-        'Sesam',
-        'Sulfit/ Schwefeldioxid',
-        'Lupine',
-        'Weichtiere',
-        'Insekten'
-    ];
 
     const getMeals = () => {
 
