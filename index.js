@@ -8,11 +8,7 @@ client.once(Events.ClientReady, c => {
 
     const getMeals = () => {
 
-        const date = new Date();
-        const day = date.getDate();
-        const month = date.getMonth() + 1;
-        const year = date.getFullYear();
-        const url = `https://openmensa.org/api/v2/canteens/${mensa_id}/days/${year}-${month}-${day}/meals`;
+        const url = buildUrl();
 
         fetch(url)
             .then(response => {
@@ -43,20 +39,10 @@ client.once(Events.ClientReady, c => {
                 mealMap.forEach((value, key) => {
                     if (hasTitleMap.get(categoriesMap.get(mealMap.get(key))) === false) {
                         content += '### ' + categoriesMap.get(mealMap.get(key)) + '\n';
-                        content += key + 1 + '. ' + value + ' (' + priceMap.get(mealMap.get(key)).students + ' €)\n'; // TODO dry code
-                        for (let i = 0; i < notesMap.get(mealMap.get(key)).length; i++) {
-                            if (!(additives.includes(notesMap.get(mealMap.get(key))[i]))) {
-                                content += ' - ' + notesMap.get(mealMap.get(key))[i] + '\n';
-                            }
-                        }
+                        content += buildContent(key, value, priceMap, mealMap, notesMap);
                         hasTitleMap.set(categoriesMap.get(mealMap.get(key)), true);
                     } else {
-                        content += key + 1 + '. ' + value + ' (' + priceMap.get(mealMap.get(key)).students + ' €)\n'; // TODO dry code
-                        for (let i = 0; i < notesMap.get(mealMap.get(key)).length; i++) {
-                            if (!(additives.includes(notesMap.get(mealMap.get(key))[i]))) {
-                                content += ' - ' + notesMap.get(mealMap.get(key))[i] + '\n';
-                            }
-                        }
+                        content += buildContent(key, value, priceMap, mealMap, notesMap);
                     }
                 });
 
@@ -67,6 +53,26 @@ client.once(Events.ClientReady, c => {
             .catch(error => {
                 console.error('There was a problem with the Fetch operation:', error);
             });
+    }
+
+    const buildUrl = () => {
+        const date = new Date();
+        const day = date.getDate();
+        const month = date.getMonth() + 1;
+        const year = date.getFullYear();
+        return `https://openmensa.org/api/v2/canteens/${mensa_id}/days/${year}-${month}-${day}/meals`;
+    }
+
+    const buildContent = (key, value, priceMap, mealMap, notesMap) => {
+        let string = key + 1 + '. ' + value + ' (' + priceMap.get(mealMap.get(key)).students + ' €)\n';
+        for (let i = 0; i < notesMap.get(mealMap.get(key)).length; i++) {
+            for (const [k, v] of Object.entries(additives)) {
+                if (!notesMap.get(mealMap.get(key))[i] === v) {
+                    string += ' - ' + notesMap.get(mealMap.get(key))[i] + '\n';
+                }
+            }
+        }
+        return string;
     }
 
     const now = new Date();
@@ -82,7 +88,7 @@ client.once(Events.ClientReady, c => {
         }, 86400000)
     }, millisTill8);
 
-    getMeals()
+    getMeals();
 });
 
 client.login(token);
