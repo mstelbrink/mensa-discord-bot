@@ -64,7 +64,9 @@ client.once(Events.ClientReady, c => {
     }
 
     const buildContent = (key, value, priceMap, mealMap, notesMap) => {
-        let string = key + 1 + '. ' + value + ' (' + priceMap.get(mealMap.get(key)).students + ' €)\n';
+        const  studentPriceUS = priceMap.get(mealMap.get(key)).students.toString();
+        const studentPriceEU = studentPriceUS.replace(".", ",");
+        let string = key + 1 + '. ' + value + ' (' + studentPriceEU + ' €)\n';
         for (let i = 0; i < notesMap.get(mealMap.get(key)).length; i++) {
             for (const [k, v] of Object.entries(additives)) {
                 if (!notesMap.get(mealMap.get(key))[i] === v) {
@@ -89,6 +91,7 @@ client.once(Events.ClientReady, c => {
     }, millisTill8);
 
     getMeals();
+
 });
 
 client.login(token);
